@@ -6,9 +6,11 @@ Vagrant.configure("2") do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
-  # Every Vagrant virtual environment requires a box to build off of.
+  # Every Vagrant virtual environment requires a box to build off of;
+  # download this one by running `vagrant box add precise64` 
   config.vm.box = "precise64"
 
+  # A fully qualified host name helps avoid errors in start up.
   config.vm.hostname = "server.puppetlabs.test"
 
   # The url from where the 'config.vm.box' box will be fetched if it
@@ -69,10 +71,12 @@ Vagrant.configure("2") do |config|
   #               Managed by Puppet.\n"
   # }
   config.vm.provision :puppet do |puppet|
+	# Autoload and make available the openldap module and stdlib
   	puppet.module_path = "modules"
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "default.pp"
-	puppet.options = "--verbose --debug"
+	# Enable verbose logging if you are having trouble
+	# puppet.options = "--verbose --debug"
   end
 
   # Enable provisioning with chef solo, specifying a cookbooks path, roles

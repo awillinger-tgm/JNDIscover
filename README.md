@@ -23,6 +23,7 @@ It uses the version "2" Vagrant file format.
 
         git clone https://github.com/cforcey/vagrant_ubuntu_openldap.git
 
+* Run `vagrant box add precise64` to download and make available Ubuntu 12.04 for your vagrant boxes.
 * Run `vagrant up` from the base directory of this project. This should take a
   few minutes.
 

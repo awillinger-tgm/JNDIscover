@@ -36,11 +36,11 @@ A test admin user has been added:
   rootdn   => 'cn=admin',
   rootpw   => 'test'
 
-There is also a test user:  test/test
+There is also a test user:  test/pass
 
 ## To Do
 
-Configure the server for authenticated access.
+* Finish testing the auth_who parameter for blocking anonymous binding.  This sets the ACL in modules/ldap/templates/server/openldap/domain_template.rb to have a users or admin auth line.  Ideally this could be passed into the script for tokenization at the high level.
 
 ## Alternate Approaches
 

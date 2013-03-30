@@ -43,8 +43,8 @@ Configure the server for authenticated access.
 
 ## Alternate Approaches
 
-# Seemingly simpler puppet but no vagrant: http://fluxcoil.net/doku.php/software/puppet/recipe_setup_openldap
-# Vagrant but no Puppet: http://codebrane.com/blog/?p=2798 
+* Seemingly simpler puppet but no vagrant: http://fluxcoil.net/doku.php/software/puppet/recipe_setup_openldap
+* Vagrant but no Puppet: http://codebrane.com/blog/?p=2798 
 
 [Vagrant]: http://www.vagrantup.com/
 

@@ -10,9 +10,11 @@
 #            will not be deleted, but rather will remain on the file system
 #            for archival purposes.
 # *basedn* - Base DN for setting up the LDAP server.
-# *rootdn* - Base DN for the administrator acount on an LDAP server.
+# *rootdn* - Base DN for the administrator account on an LDAP server.
 # *rootpw* - Password for the administrator account. Will accept any valid
 #          - Hashed (crypt|(s)md5|(s)sha) or plaintext password.
+# *auth_who* - Value for who should be allowed to authenticate: anonymous,
+#		 	 users, or dn.base=[rootdn],[basedn]
 #
 # Actions:
 #
@@ -26,12 +28,14 @@
 #   basedn   => 'dc=puppetlabs,dc=test',
 #   rootdn   => 'cn=admin',
 #   rootpw   => 'test',
+#   auth_who => 'anonymous'
 # }
 define ldap::define::domain(
   $ensure = 'present',
   $basedn = undef,
   $rootdn = undef,
-  $rootpw = undef
+  $rootpw = undef,
+  $auth_who = undef
 ){
   File {
     owner   => 'root',

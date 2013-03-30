@@ -28,4 +28,5 @@ ldap::define::domain {'puppetlabs.test':
   basedn   => 'dc=puppetlabs,dc=test',
   rootdn   => 'cn=admin',
   rootpw   => 'test',
+  auth_who => 'anonymous'
 }

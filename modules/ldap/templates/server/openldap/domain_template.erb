@@ -16,9 +16,11 @@ index nisMapName,nisMapEntry            eq,pres,sub
 include <%= scope.lookupvar('ldap::params::lp_openldap_conf_dir') %>/domains/<%= name %>-acl.conf
 
 # Default Admin ACLs
+# Change line 23 to users for authenticated binding
+# or a specific dn like line 24 for admins only
 access to attrs=userPassword
     by self write
-    by anonymous auth
+    by <%= auth_who || 'anonymous' %> auth
     by dn.base="<%= rootdn %>,<%= basedn %>" write
     by * none
 access to *

@@ -25,9 +25,9 @@ This can be placed in a finally block, for example.
 
 To run one of the operations, run the jar file like so:
 
-java -jar JNDiscover-rxx.yyyyyy.jar <Operation>
+java -jar JNDiscover-rxx.yyyyyy.jar <operation> <host:port>
 
-Whereas <Operation> is one of the following:
+Whereas <operation> is one of the following:
 
 ========================== =======================================
 Operation                  Executes
@@ -55,7 +55,7 @@ Example:
 
 .. code:: bash
 
-    java -jar JNDiscover-r21.6cc02b.jar lookup
+    java -jar JNDiscover-r21.6cc02b.jar lookup 192.168.0.2:3890
 
 
 Lookup an Object

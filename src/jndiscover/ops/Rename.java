@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,65 +29,49 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import javax.naming.*;
-import javax.naming.directory.*;
-
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search and limit the time
- * that the search takes.
- *
- * usage: java SearchTimeLimit
- */
-class SearchTimeLimit {
-    static int timeout = 1000; // 1 second == 1000 ms
-    public static void printSearchEnumeration(NamingEnumeration srhEnum) {
-	int count = 0;
-	try {
-	    while (srhEnum.hasMore()) {
-		SearchResult sr = (SearchResult) srhEnum.next();
-		System.out.println(">>>" + sr.getName());
-		++count;
-	    }
-	    System.out.println("number of answers: " + count);
-	} catch (TimeLimitExceededException e) {
-	    System.out.println("search took more than " + timeout +"ms");
-	} catch (NamingException e) {
-	    e.printStackTrace();
-	}
-    }
+  * Demonstrates how to rename an object.
+  *
+  * usage: java Rename
+  */
 
+public class Rename {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
+	env.put(Context.PROVIDER_URL,
+		"ldap://localhost:389/ou=People,o=JNDITutorial");
 
 	try {
-	    // Create initial context
-	    DirContext ctx = new InitialDirContext(env);
+	    // Create the initial context
+	    Context ctx = new InitialContext(env);
 
-	    // Set search controls to limit count to 'timeout'
-	    SearchControls ctls = new SearchControls();
-	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    ctls.setTimeLimit(timeout); //
+	    // Rename to Scott J
+	    ctx.rename("cn=Scott Jones", "cn=Scott J");
 
-	    // Search for objects with those matching attributes
-	    NamingEnumeration answer = 
-		ctx.search("","(objectclass=*)", ctls );
+	    // Check that it is there using new name
+	    Object obj = ctx.lookup("cn=Scott J");
+	    System.out.println(obj);
 
-	    // Print the answer
-	    printSearchEnumeration(answer);
+	    // Rename back to Scott Jones
+	    ctx.rename("cn=Scott J", "cn=Scott Jones");
+
+	    // Check that it is there with original name
+	    obj = ctx.lookup("cn=Scott Jones");
+	    System.out.println(obj);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (TimeLimitExceededException e) {
-	    System.out.println("time limit exceeded");
-	} catch (Exception e) {
-	    System.err.println(e);
+	} catch (NamingException e) {
+	    System.out.println("Rename failed: " + e);
 	}
     }
 }

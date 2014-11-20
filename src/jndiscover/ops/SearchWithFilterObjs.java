@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,32 +35,13 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search and limit the number of
- * results returned.
+ * Demonstrates how to perform a search by specifying a search filter,
+ * objects to fill in filter, andsearch controls. 
+ * Functionally identical to Search.java.
  *
- * usage: java SearchCountLimit
+ * usage: java SearchWithFilterObjs
  */
-class SearchCountLimit {
-    static int expected = 1;
-    public static void printSearchEnumeration(NamingEnumeration srhEnum) {
-	int count = 0;
-	try {
-	    while (srhEnum.hasMore()) {
-		SearchResult sr = (SearchResult) srhEnum.next();
-		System.out.println(">>>" + sr.getName());
-		++count;
-	    }
-	    System.out.println("number of answers: " + count);
-	} catch (SizeLimitExceededException e) {
-	    if (count == expected)
-		System.out.println("number of answers: " + count);
-	    else
-		e.printStackTrace();
-	} catch (NamingException e) {
-	    e.printStackTrace();
-	}
-    }
-
+class SearchWithFilterObjs {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -73,21 +54,28 @@ class SearchCountLimit {
 	    // Create initial context
 	    DirContext ctx = new InitialDirContext(env);
 
-	    // Set search controls to limit count to 'expected'
+	    // Specify the ids of the attributes to return
+	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
 	    SearchControls ctls = new SearchControls();
-	    ctls.setCountLimit(expected);
+	    ctls.setReturningAttributes(attrIDs);
 
-	    // Search for objects with those matching attributes
+	    // Specify the search filter to match
+	    // Ask for objects with attribute sn == Smith and which have
+	    // the "mail" attribute.
+	    String filter = "(&(sn={0})(mail=*))";
+
+	    // Search for objects using filter
 	    NamingEnumeration answer = 
-		ctx.search("ou=People","(sn=M*)", ctls );
+		ctx.search("ou=People", filter, 
+		    new Object[] {"Smith"},ctls);
 
 	    // Print the answer
-	    printSearchEnumeration(answer);
+	    Search.printSearchEnumeration(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
 	} catch (Exception e) {
-	    System.err.println(e);
+	    e.printStackTrace();
 	}
     }
 }

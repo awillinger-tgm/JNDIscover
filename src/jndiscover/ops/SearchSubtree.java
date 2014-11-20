@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,13 +35,12 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a set of
- * attributes to be matched. Returns all attributes of objects
- * that contain those matching attributes.
+ * Demonstrates how to perform a search by specifying a search filter
+ * and search controls to search a subtree.
  *
- * usage: java SearchRetAll
+ * usage: java SearchSubtree
  */
-class SearchRetAll {
+class SearchSubtree {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -54,16 +53,19 @@ class SearchRetAll {
 	    // Create initial context
 	    DirContext ctx = new InitialDirContext(env);
 
-	    // Specify the attributes to match
-	    // Ask for objects with the surname ("sn") attribute
-	    // with the value "Smith"
-	    // and the "mail" attribute.
-	    Attributes matchAttrs = new BasicAttributes(true); // ignore case
-	    matchAttrs.put(new BasicAttribute("sn", "Smith"));
-	    matchAttrs.put(new BasicAttribute("mail"));
+	    // Specify the ids of the attributes to return
+	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
+	    SearchControls ctls = new SearchControls();
+	    ctls.setReturningAttributes(attrIDs);
+	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-	    // Search for objects that have those matching attributes
-	    NamingEnumeration answer = ctx.search("ou=People", matchAttrs);
+	    // Specify the search filter to match
+	    // Ask for objects with attribute sn == Smith and which have
+	    // the "mail" attribute.
+	    String filter = "(&(sn=Smith)(mail=*))";
+
+	    // Search subtree for objects using filter
+	    NamingEnumeration answer = ctx.search("", filter, ctls);
 
 	    // Print the answer
 	    Search.printSearchEnumeration(answer);

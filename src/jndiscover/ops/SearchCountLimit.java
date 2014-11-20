@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,20 +35,27 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a set of
- * attributes to be matched. Returns selected attributes of objects
- * that contain those matching attributes.
+ * Demonstrates how to perform a search and limit the number of
+ * results returned.
  *
- * usage: java Search
+ * usage: java SearchCountLimit
  */
-class Search {
-    public static void printSearchEnumeration(NamingEnumeration retEnum) {
+class SearchCountLimit {
+    static int expected = 1;
+    public static void printSearchEnumeration(NamingEnumeration srhEnum) {
+	int count = 0;
 	try {
-	    while (retEnum.hasMore()) {
-		SearchResult sr = (SearchResult) retEnum.next();
+	    while (srhEnum.hasMore()) {
+		SearchResult sr = (SearchResult) srhEnum.next();
 		System.out.println(">>>" + sr.getName());
-		GetAllAttrs.printAttrs(sr.getAttributes());
+		++count;
 	    }
+	    System.out.println("number of answers: " + count);
+	} catch (SizeLimitExceededException e) {
+	    if (count == expected)
+		System.out.println("number of answers: " + count);
+	    else
+		e.printStackTrace();
 	} catch (NamingException e) {
 	    e.printStackTrace();
 	}
@@ -66,19 +73,13 @@ class Search {
 	    // Create initial context
 	    DirContext ctx = new InitialDirContext(env);
 
-	    // Specify the ids of the attributes to return
-	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
+	    // Set search controls to limit count to 'expected'
+	    SearchControls ctls = new SearchControls();
+	    ctls.setCountLimit(expected);
 
-	    // Specify the attributes to match
-	    // Ask for objects that have the attribute 
-	    // sn == Smith and the "mail" attribute.
-	    Attributes matchAttrs = new BasicAttributes(true); // ignore case
-	    matchAttrs.put(new BasicAttribute("sn", "Smith"));
-	    matchAttrs.put(new BasicAttribute("mail"));
-
-	    // Search for objects that have those matching attributes
+	    // Search for objects with those matching attributes
 	    NamingEnumeration answer = 
-		ctx.search("ou=People", matchAttrs, attrIDs);
+		ctx.search("ou=People","(sn=M*)", ctls );
 
 	    // Print the answer
 	    printSearchEnumeration(answer);
@@ -86,7 +87,7 @@ class Search {
 	    // Close the context when we're done
 	    ctx.close();
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.err.println(e);
 	}
     }
 }

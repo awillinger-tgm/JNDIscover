@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,40 +29,48 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import ops.Fruit;
+import javax.naming.*;
+import javax.naming.directory.*;
 
-import javax.naming.Context;
-import javax.naming.Name;
-import javax.naming.RefAddr;
-import javax.naming.Reference;
-import javax.naming.spi.ObjectFactory;
 import java.util.Hashtable;
 
 /**
- * This is an object factory that when given a reference for a Fruit
- * object, will create an instance of the corresponding Fruit.
+ * Demonstrates how to perform a search by specifying a search filter
+ * and default search controls. Functionally identical to SearchRetAll.java.
+ *
+ * usage: java SearchWithFilterRetAll
  */
-public class FruitFactory implements ObjectFactory {
+class SearchWithFilterRetAll {
+    public static void main(String[] args) {
 
-    public FruitFactory() {
-    }
+	// Set up the environment for creating the initial context
+        Hashtable<String, Object> env = new Hashtable<String, Object>(11);
+	env.put(Context.INITIAL_CONTEXT_FACTORY, 
+	    "com.sun.jndi.ldap.LdapCtxFactory");
+	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
-    public Object getObjectInstance(Object obj,
-				    Name name,
-				    Context ctx,
-				    Hashtable<?, ?> env)
-		 throws Exception {
+	try {
+	    // Create initial context
+	    DirContext ctx = new InitialDirContext(env);
 
-	if (obj instanceof Reference) {
-	    Reference ref = (Reference)obj;
+	    // Create default search controls
+	    SearchControls ctls = new SearchControls();
 
-	    if (ref.getClassName().equals(Fruit.class.getName())) {
-		RefAddr addr = ref.get("fruit");
-		if (addr != null) {
-		    return new Fruit((String)addr.getContent());
-		}
-	    }
+	    // Specify the search filter to match
+	    // Ask for objects with attribute sn == Smith and which have
+	    // the "mail" attribute.
+	    String filter = "(&(sn=Smith)(mail=*))";
+
+	    // Search for objects using filter
+	    NamingEnumeration answer = ctx.search("ou=People", filter, ctls);
+
+	    // Print the answer
+	    Search.printSearchEnumeration(answer);
+
+	    // Close the context when we're done
+	    ctx.close();
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
-	return null;
     }
 }

@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,16 +30,14 @@ package ops;/*
  */ 
 
 import javax.naming.*;
-import java.io.File;
 import java.util.Hashtable;
 
 /**
-  * Demonstrates how to overwrite an existing binding.
-  * (Use after Bind example; Use Unbind to remove binding).
-  *
-  * usage: java Rebind
-  */
-class Rebind {
+ * Demonstrates how to list the bindings in a context.
+ *
+ * usage: java ListBindings
+ */
+class ListBindings {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -52,20 +50,19 @@ class Rebind {
 	    // Create the initial context
 	    Context ctx = new InitialContext(env);
 
-	    // Create the object to be bound
-	    Fruit fruit = new Fruit("lemon");
+	    // Get listing of context
+	    NamingEnumeration bindings = ctx.listBindings("ou=People");
 
-	    // Perform the bind
-	    ctx.rebind("cn=Favorite Fruit", fruit);
-
-	    // Check that it is bound
-	    Object obj = ctx.lookup("cn=Favorite Fruit");
-	    System.out.println(obj);
+	    // Go through each item in list
+	    while (bindings.hasMore()) {
+		Binding bd = (Binding)bindings.next();
+		System.out.println(bd.getName() + ": " + bd.getObject());
+	    }
 
 	    // Close the context when we're done
 	    ctx.close();
 	} catch (NamingException e) {
-	    System.out.println("Operation failed: " + e);
+	    System.out.println("List Bindings failed: " + e);
 	}
     }
 }

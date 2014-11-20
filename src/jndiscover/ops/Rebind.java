@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,18 +29,18 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import javax.naming.*;
-import javax.naming.directory.*;
-
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a search filter
- * and search controls to search a subtree.
- *
- * usage: java SearchSubtree
- */
-class SearchSubtree {
+  * Demonstrates how to overwrite an existing binding.
+  * (Use after Bind example; Use Unbind to remove binding).
+  *
+  * usage: java Rebind
+  */
+public class Rebind {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -50,30 +50,23 @@ class SearchSubtree {
 	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create initial context
-	    DirContext ctx = new InitialDirContext(env);
+	    // Create the initial context
+	    Context ctx = new InitialContext(env);
 
-	    // Specify the ids of the attributes to return
-	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
-	    SearchControls ctls = new SearchControls();
-	    ctls.setReturningAttributes(attrIDs);
-	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	    // Create the object to be bound
+	    Fruit fruit = new Fruit("lemon");
 
-	    // Specify the search filter to match
-	    // Ask for objects with attribute sn == Smith and which have
-	    // the "mail" attribute.
-	    String filter = "(&(sn=Smith)(mail=*))";
+	    // Perform the bind
+	    ctx.rebind("cn=Favorite Fruit", fruit);
 
-	    // Search subtree for objects using filter
-	    NamingEnumeration answer = ctx.search("", filter, ctls);
-
-	    // Print the answer
-	    Search.printSearchEnumeration(answer);
+	    // Check that it is bound
+	    Object obj = ctx.lookup("cn=Favorite Fruit");
+	    System.out.println(obj);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
+	} catch (NamingException e) {
+	    System.out.println("Operation failed: " + e);
 	}
     }
 }

@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,29 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a search filter
- * and search controls to search an object.
+ * Demonstrates how to perform a search and limit the time
+ * that the search takes.
  *
- * usage: java SearchObject
+ * usage: java SearchTimeLimit
  */
-class SearchObject {
+class SearchTimeLimit {
+    static int timeout = 1000; // 1 second == 1000 ms
+    public static void printSearchEnumeration(NamingEnumeration srhEnum) {
+	int count = 0;
+	try {
+	    while (srhEnum.hasMore()) {
+		SearchResult sr = (SearchResult) srhEnum.next();
+		System.out.println(">>>" + sr.getName());
+		++count;
+	    }
+	    System.out.println("number of answers: " + count);
+	} catch (TimeLimitExceededException e) {
+	    System.out.println("search took more than " + timeout +"ms");
+	} catch (NamingException e) {
+	    e.printStackTrace();
+	}
+    }
+
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -53,28 +70,24 @@ class SearchObject {
 	    // Create initial context
 	    DirContext ctx = new InitialDirContext(env);
 
-	    // Specify the ids of the attributes to return
-	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
+	    // Set search controls to limit count to 'timeout'
 	    SearchControls ctls = new SearchControls();
-	    ctls.setReturningAttributes(attrIDs);
-	    ctls.setSearchScope(SearchControls.OBJECT_SCOPE);
+	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	    ctls.setTimeLimit(timeout); //
 
-	    // Specify the search filter to match
-	    // Ask for objects with attribute sn == Geisel and which have
-	    // the "mail" attribute.
-	    String filter = "(&(sn=Geisel)(mail=*))";
-
-	    // Search subtree for objects using filter
+	    // Search for objects with those matching attributes
 	    NamingEnumeration answer = 
-		ctx.search("cn=Ted Geisel, ou=People", filter, ctls);
+		ctx.search("","(objectclass=*)", ctls );
 
 	    // Print the answer
-	    Search.printSearchEnumeration(answer);
+	    printSearchEnumeration(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
+	} catch (TimeLimitExceededException e) {
+	    System.out.println("time limit exceeded");
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    System.err.println(e);
 	}
     }
 }

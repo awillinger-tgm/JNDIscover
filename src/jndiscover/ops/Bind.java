@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,18 +29,19 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import javax.naming.*;
-import javax.naming.directory.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.util.Hashtable;
 
 /**
-  * Demonstrates how to create a new subcontext called "ou=NewOu" with some 
-  * attributes.
-  * (Run Destroy after this to remove the subcontext).
+  * Demonstrates how to add a binding to a context.
+  * (Use Rebind example to overwrite binding; use Unbind to remove binding.)
   *
-  * usage: java Create
+  * usage: java Bind
   */
-class Create {
+
+public class Bind {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -51,32 +52,22 @@ class Create {
 
 	try {
 	    // Create the initial context
-	    DirContext ctx = new InitialDirContext(env);
+	    Context ctx = new InitialContext(env);
 
-	    // Create attributes to be associated with the new context
-	    Attributes attrs = new BasicAttributes(true); // case-ignore
-	    Attribute objclass = new BasicAttribute("objectclass");
-	    objclass.add("top");
-	    objclass.add("organizationalUnit");
-	    attrs.put(objclass);
+	    // Create the object to be bound
+	    Fruit fruit = new Fruit("orange");
 
-	    // Create the context
-	    Context result = ctx.createSubcontext("ou=NewOu", attrs);
+	    // Perform the bind
+	    ctx.bind("cn=Favorite Fruit", fruit);
 
-	    // Check that it was created by listing its parent
-	    NamingEnumeration list = ctx.list("");
+	    // Check that it is bound
+	    Object obj = ctx.lookup("cn=Favorite Fruit");
+	    System.out.println(obj);
 
-	    // Go through each item in list
-	    while (list.hasMore()) {
-		NameClassPair nc = (NameClassPair)list.next();
-		System.out.println(nc);
-	    }
-
-	    // Close the contexts when we're done
-	    result.close();
+	    // Close the context when we're done
 	    ctx.close();
 	} catch (NamingException e) {
-	    System.out.println("Create failed: " + e);
+	    System.out.println("Operation failed: " + e);
 	}
     }
 }

@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,12 +35,11 @@ import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a search filter
- * and default search controls. Functionally identical to SearchRetAll.java.
+ * Demonstrates how to retrieve selected attributes of a named object.
  *
- * usage: java SearchWithFilterRetAll
+ * usage: java GetAttrs
  */
-class SearchWithFilterRetAll {
+class GetAttrs {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -53,19 +52,15 @@ class SearchWithFilterRetAll {
 	    // Create initial context
 	    DirContext ctx = new InitialDirContext(env);
 
-	    // Create default search controls
-	    SearchControls ctls = new SearchControls();
+	    // Specify the ids of the attributes to return
+	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
 
-	    // Specify the search filter to match
-	    // Ask for objects with attribute sn == Smith and which have
-	    // the "mail" attribute.
-	    String filter = "(&(sn=Smith)(mail=*))";
-
-	    // Search for objects using filter
-	    NamingEnumeration answer = ctx.search("ou=People", filter, ctls);
+	    // Get the attributes requested
+	    Attributes answer = 
+		ctx.getAttributes("cn=Ted Geisel, ou=People", attrIDs);
 
 	    // Print the answer
-	    Search.printSearchEnumeration(answer);
+	    printAttrs(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
@@ -73,4 +68,28 @@ class SearchWithFilterRetAll {
 	    e.printStackTrace();
 	}
     }
+
+    static void printAttrs(Attributes attrs) {
+        if (attrs == null) {
+            System.out.println("No attributes");
+        } else {
+            /* Print each attribute */
+            try {
+                for (NamingEnumeration ae = attrs.getAll();
+                     ae.hasMore();) {
+                    Attribute attr = (Attribute)ae.next();
+                    System.out.println("attribute: " + attr.getID());
+
+                    /* print each value */
+                    for (NamingEnumeration e = attr.getAll();
+                         e.hasMore();
+                         System.out.println("value: " + e.next()))
+                        ;
+                }
+            } catch (NamingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,49 +29,49 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.naming.*;
+import javax.naming.directory.*;
+
 import java.util.Hashtable;
 
 /**
-  * Demonstrates how to rename an object.
-  *
-  * usage: java Rename
-  */
-
-class Rename {
+ * Demonstrates how to perform a search by specifying a set of
+ * attributes to be matched. Returns all attributes of objects
+ * that contain those matching attributes.
+ *
+ * usage: java SearchRetAll
+ */
+class SearchRetAll {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL,
-		"ldap://localhost:389/ou=People,o=JNDITutorial");
+	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create the initial context
-	    Context ctx = new InitialContext(env);
+	    // Create initial context
+	    DirContext ctx = new InitialDirContext(env);
 
-	    // Rename to Scott J
-	    ctx.rename("cn=Scott Jones", "cn=Scott J");
+	    // Specify the attributes to match
+	    // Ask for objects with the surname ("sn") attribute
+	    // with the value "Smith"
+	    // and the "mail" attribute.
+	    Attributes matchAttrs = new BasicAttributes(true); // ignore case
+	    matchAttrs.put(new BasicAttribute("sn", "Smith"));
+	    matchAttrs.put(new BasicAttribute("mail"));
 
-	    // Check that it is there using new name
-	    Object obj = ctx.lookup("cn=Scott J");
-	    System.out.println(obj);
+	    // Search for objects that have those matching attributes
+	    NamingEnumeration answer = ctx.search("ou=People", matchAttrs);
 
-	    // Rename back to Scott Jones
-	    ctx.rename("cn=Scott J", "cn=Scott Jones");
-
-	    // Check that it is there with original name
-	    obj = ctx.lookup("cn=Scott Jones");
-	    System.out.println(obj);
+	    // Print the answer
+	    Search.printSearchEnumeration(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (NamingException e) {
-	    System.out.println("Rename failed: " + e);
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
     }
 }

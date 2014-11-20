@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,14 +30,17 @@ package ops;/*
  */ 
 
 import javax.naming.*;
+import javax.naming.directory.*;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to list the bindings in a context.
- *
- * usage: java ListBindings
- */
-class ListBindings {
+  * Demonstrates how to create a new subcontext called "ou=NewOu" with some 
+  * attributes.
+  * (Run Destroy after this to remove the subcontext).
+  *
+  * usage: java Create
+  */
+public class Create {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -48,21 +51,32 @@ class ListBindings {
 
 	try {
 	    // Create the initial context
-	    Context ctx = new InitialContext(env);
+	    DirContext ctx = new InitialDirContext(env);
 
-	    // Get listing of context
-	    NamingEnumeration bindings = ctx.listBindings("ou=People");
+	    // Create attributes to be associated with the new context
+	    Attributes attrs = new BasicAttributes(true); // case-ignore
+	    Attribute objclass = new BasicAttribute("objectclass");
+	    objclass.add("top");
+	    objclass.add("organizationalUnit");
+	    attrs.put(objclass);
+
+	    // Create the context
+	    Context result = ctx.createSubcontext("ou=NewOu", attrs);
+
+	    // Check that it was created by listing its parent
+	    NamingEnumeration list = ctx.list("");
 
 	    // Go through each item in list
-	    while (bindings.hasMore()) {
-		Binding bd = (Binding)bindings.next();
-		System.out.println(bd.getName() + ": " + bd.getObject());
+	    while (list.hasMore()) {
+		NameClassPair nc = (NameClassPair)list.next();
+		System.out.println(nc);
 	    }
 
-	    // Close the context when we're done
+	    // Close the contexts when we're done
+	    result.close();
 	    ctx.close();
 	} catch (NamingException e) {
-	    System.out.println("List Bindings failed: " + e);
+	    System.out.println("Create failed: " + e);
 	}
     }
 }

@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import java.util.Hashtable;
  *
  * usage: java List
  */
-class List {
+public class List {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context

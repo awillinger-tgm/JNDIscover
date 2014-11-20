@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,15 @@ package ops;/*
  */ 
 
 import javax.naming.*;
-import javax.naming.directory.*;
-
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to perform a search by specifying a search filter
- * and search controls. Functionally identical to Search.java.
- *
- * usage: java SearchWithFilter
- */
-class SearchWithFilter {
+  * Demonstrates how to destroy a subcontext called "ou=NewOu".
+  * (Run this after running Create)
+  *
+  * usage: java Destroy
+  */
+public class Destroy {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -50,29 +48,25 @@ class SearchWithFilter {
 	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create initial context
-	    DirContext ctx = new InitialDirContext(env);
+	    // Create the initial context
+	    Context ctx = new InitialContext(env);
 
-	    // Specify the ids of the attributes to return
-	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
-	    SearchControls ctls = new SearchControls();
-	    ctls.setReturningAttributes(attrIDs);
+	    // Destroy the context
+	    ctx.destroySubcontext("ou=NewOu");
 
-	    // Specify the search filter to match
-	    // Ask for objects with attribute sn == Smith and which have
-	    // the "mail" attribute.
-	    String filter = "(&(sn=Smith)(mail=*))";
+	    // Check that it has been destroyed by listing its parent
+	    NamingEnumeration list = ctx.list("");
 
-	    // Search for objects using filter
-	    NamingEnumeration answer = ctx.search("ou=People", filter, ctls);
-
-	    // Print the answer
-	    Search.printSearchEnumeration(answer);
+	    // Go through each item in list
+	    while (list.hasMore()) {
+		NameClassPair nc = (NameClassPair)list.next();
+		System.out.println(nc);
+	    }
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
+	} catch (NamingException e) {
+	    System.out.println("destroy failed: " + e);
 	}
     }
 }

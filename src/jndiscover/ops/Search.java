@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,30 @@ package ops;/*
  */ 
 
 import javax.naming.*;
-import java.io.File;
+import javax.naming.directory.*;
+
 import java.util.Hashtable;
 
 /**
-  * Demonstrates how to add a binding to a context.
-  * (Use Rebind example to overwrite binding; use Unbind to remove binding.)
-  *
-  * usage: java Bind
-  */
+ * Demonstrates how to perform a search by specifying a set of
+ * attributes to be matched. Returns selected attributes of objects
+ * that contain those matching attributes.
+ *
+ * usage: java Search
+ */
+class Search {
+    public static void printSearchEnumeration(NamingEnumeration retEnum) {
+	try {
+	    while (retEnum.hasMore()) {
+		SearchResult sr = (SearchResult) retEnum.next();
+		System.out.println(">>>" + sr.getName());
+		GetAllAttrs.printAttrs(sr.getAttributes());
+	    }
+	} catch (NamingException e) {
+	    e.printStackTrace();
+	}
+    }
 
-class Bind {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -50,23 +63,30 @@ class Bind {
 	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create the initial context
-	    Context ctx = new InitialContext(env);
+	    // Create initial context
+	    DirContext ctx = new InitialDirContext(env);
 
-	    // Create the object to be bound
-	    Fruit fruit = new Fruit("orange");
+	    // Specify the ids of the attributes to return
+	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
 
-	    // Perform the bind
-	    ctx.bind("cn=Favorite Fruit", fruit);
+	    // Specify the attributes to match
+	    // Ask for objects that have the attribute 
+	    // sn == Smith and the "mail" attribute.
+	    Attributes matchAttrs = new BasicAttributes(true); // ignore case
+	    matchAttrs.put(new BasicAttribute("sn", "Smith"));
+	    matchAttrs.put(new BasicAttribute("mail"));
 
-	    // Check that it is bound
-	    Object obj = ctx.lookup("cn=Favorite Fruit");
-	    System.out.println(obj);
+	    // Search for objects that have those matching attributes
+	    NamingEnumeration answer = 
+		ctx.search("ou=People", matchAttrs, attrIDs);
+
+	    // Print the answer
+	    printSearchEnumeration(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (NamingException e) {
-	    System.out.println("Operation failed: " + e);
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
     }
 }

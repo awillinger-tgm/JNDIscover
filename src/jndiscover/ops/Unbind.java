@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,17 +29,19 @@ package ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import javax.naming.*;
-import javax.naming.directory.*;
-
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 import java.util.Hashtable;
 
 /**
- * Demonstrates how to retrieve selected attributes of a named object.
- *
- * usage: java GetAttrs
- */
-class GetAttrs {
+  * Demonstrates how to remove a binding.
+  * (Use after Bind or Rebind example).
+  * 
+  * usage: java Unbind
+  */
+public class Unbind {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -49,47 +51,27 @@ class GetAttrs {
 	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create initial context
-	    DirContext ctx = new InitialDirContext(env);
+	    // Create the initial context
+	    Context ctx = new InitialContext(env);
 
-	    // Specify the ids of the attributes to return
-	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
+	    // Remove the binding
+	    ctx.unbind("cn=Favorite Fruit");
 
-	    // Get the attributes requested
-	    Attributes answer = 
-		ctx.getAttributes("cn=Ted Geisel, ou=People", attrIDs);
+	    // Check that it is gone
+	    Object obj = null;
+	    try {
+		obj = ctx.lookup("cn=Favorite Fruit");
+	    } catch (NameNotFoundException ne) {
+		System.out.println("unbind successful");
+		return;
+	    }
 
-	    // Print the answer
-	    printAttrs(answer);
+	    System.out.println("unbind failed; object still there: " + obj);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (Exception e) {
-	    e.printStackTrace();
+	} catch (NamingException e) {
+	    System.out.println("Operation failed: " + e);
 	}
     }
-
-    static void printAttrs(Attributes attrs) {
-        if (attrs == null) {
-            System.out.println("No attributes");
-        } else {
-            /* Print each attribute */
-            try {
-                for (NamingEnumeration ae = attrs.getAll();
-                     ae.hasMore();) {
-                    Attribute attr = (Attribute)ae.next();
-                    System.out.println("attribute: " + attr.getID());
-
-                    /* print each value */
-                    for (NamingEnumeration e = attr.getAll();
-                         e.hasMore();
-                         System.out.println("value: " + e.next()))
-                        ;
-                }
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 }

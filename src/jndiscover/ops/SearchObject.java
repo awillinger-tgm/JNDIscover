@@ -1,4 +1,4 @@
-package ops;/*
+package jndiscover.ops;/*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,16 +30,17 @@ package ops;/*
  */ 
 
 import javax.naming.*;
-import java.io.File;
+import javax.naming.directory.*;
+
 import java.util.Hashtable;
 
 /**
-  * Demonstrates how to remove a binding.
-  * (Use after Bind or Rebind example).
-  * 
-  * usage: java Unbind
-  */
-class Unbind {
+ * Demonstrates how to perform a search by specifying a search filter
+ * and search controls to search an object.
+ *
+ * usage: java SearchObject
+ */
+class SearchObject {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context
@@ -49,27 +50,31 @@ class Unbind {
 	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
 
 	try {
-	    // Create the initial context
-	    Context ctx = new InitialContext(env);
+	    // Create initial context
+	    DirContext ctx = new InitialDirContext(env);
 
-	    // Remove the binding
-	    ctx.unbind("cn=Favorite Fruit");
+	    // Specify the ids of the attributes to return
+	    String[] attrIDs = {"sn", "telephonenumber", "golfhandicap", "mail"};
+	    SearchControls ctls = new SearchControls();
+	    ctls.setReturningAttributes(attrIDs);
+	    ctls.setSearchScope(SearchControls.OBJECT_SCOPE);
 
-	    // Check that it is gone
-	    Object obj = null;
-	    try {
-		obj = ctx.lookup("cn=Favorite Fruit");
-	    } catch (NameNotFoundException ne) {
-		System.out.println("unbind successful");
-		return;
-	    }
+	    // Specify the search filter to match
+	    // Ask for objects with attribute sn == Geisel and which have
+	    // the "mail" attribute.
+	    String filter = "(&(sn=Geisel)(mail=*))";
 
-	    System.out.println("unbind failed; object still there: " + obj);
+	    // Search subtree for objects using filter
+	    NamingEnumeration answer = 
+		ctx.search("cn=Ted Geisel, ou=People", filter, ctls);
+
+	    // Print the answer
+	    Search.printSearchEnumeration(answer);
 
 	    // Close the context when we're done
 	    ctx.close();
-	} catch (NamingException e) {
-	    System.out.println("Operation failed: " + e);
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
     }
 }

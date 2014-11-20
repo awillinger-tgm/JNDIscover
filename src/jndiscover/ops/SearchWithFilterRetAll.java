@@ -40,7 +40,7 @@ import java.util.Hashtable;
  *
  * usage: java SearchWithFilterRetAll
  */
-class SearchWithFilterRetAll {
+public class SearchWithFilterRetAll {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context

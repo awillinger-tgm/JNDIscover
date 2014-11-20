@@ -41,7 +41,7 @@ import java.util.Hashtable;
  *
  * usage: java Search
  */
-class Search {
+public class Search {
     public static void printSearchEnumeration(NamingEnumeration retEnum) {
 	try {
 	    while (retEnum.hasMore()) {

@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * usage: java ModAttrs
  */
 
-class ModAttrs {
+public class ModAttrs {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context

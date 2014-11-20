@@ -11,11 +11,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-    requirements
-    installation_ldap
-    snippets
-    timerecording_klepp
-    timerecording_willinger
+   specification
+   installation_ldap
+   snippets
+   timerecording_klepp
+   timerecording_willinger
 
 Indices and tables
 ==================

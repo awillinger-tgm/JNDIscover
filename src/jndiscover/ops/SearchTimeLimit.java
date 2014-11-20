@@ -40,7 +40,7 @@ import java.util.Hashtable;
  *
  * usage: java SearchTimeLimit
  */
-class SearchTimeLimit {
+public class SearchTimeLimit {
     static int timeout = 1000; // 1 second == 1000 ms
     public static void printSearchEnumeration(NamingEnumeration srhEnum) {
 	int count = 0;

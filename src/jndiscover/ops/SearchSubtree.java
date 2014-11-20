@@ -40,7 +40,7 @@ import java.util.Hashtable;
  *
  * usage: java SearchSubtree
  */
-class SearchSubtree {
+public class SearchSubtree {
     public static void main(String[] args) {
 
 	// Set up the environment for creating the initial context

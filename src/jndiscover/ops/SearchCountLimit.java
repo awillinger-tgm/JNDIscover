@@ -40,7 +40,7 @@ import java.util.Hashtable;
  *
  * usage: java SearchCountLimit
  */
-class SearchCountLimit {
+public class SearchCountLimit {
     static int expected = 1;
     public static void printSearchEnumeration(NamingEnumeration srhEnum) {
 	int count = 0;

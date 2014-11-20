@@ -25,29 +25,37 @@ This can be placed in a finally block, for example.
 
 To run one of the operations, run the jar file like so:
 
-java -jar JNDiscover-rxx.yyyyyy.jar <Operation>
+java -jar JNDiscover-rxx.yyyyyy.jar <operation> <host:port>
 
-Whereas <Operation> is one of the following:
+Whereas <operation> is one of the following:
 
-=================== =======================================
-Operation           Executes
-=================== =======================================
-lookup              Lookup an object
-list                List the context
-bind                Add a binding
-rebind              Replace a binding
-unbind              Remove a binding
-rename              Rename (object)
-create              Create a subcontext
-destroy             Destroy a subcontext
-get_all_attributes  Read attributes
-=================== =======================================
+========================== =======================================
+Operation                  Executes
+========================== =======================================
+lookup                     Lookup an object
+list                       List the context
+bind                       Add a binding
+rebind                     Replace a binding
+unbind                     Remove a binding
+rename                     Rename (object)
+create                     Create a subcontext
+destroy                    Destroy a subcontext
+get_all_attributes         Read attributes
+mod_attributes             Modify attributes
+bind_attributes            Add a binding with attributes
+rebind_attributes          Replace a binding with attributes
+search                     Search - Basic
+search_with_filter_ret_all Search - Filters
+search_subtree             Search - Scope
+search_count_limit         Search - Result count
+search_time_limit          Search - Time limit    
+========================== =======================================
 
 Example:
 
 .. code:: bash
 
-    java -jar JNDiscover-r21.6cc02b.jar lookup
+    java -jar JNDiscover-r21.6cc02b.jar lookup 192.168.0.2:3890
 
 
 Lookup an Object

@@ -29,16 +29,10 @@ package jndiscover.ops;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-import java.util.Hashtable;
-
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.*;
+import java.util.Hashtable;
 
 /**
   * Demonstrates how to add a binding to a context with attributes.
@@ -53,7 +47,7 @@ public class BindAttrs {
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
+	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial");
 
 	try {
 	    // Create the initial context

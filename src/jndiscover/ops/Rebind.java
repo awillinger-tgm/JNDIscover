@@ -47,7 +47,7 @@ public class Rebind {
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://localhost:389/o=JNDITutorial");
+	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial");
 
 	try {
 	    // Create the initial context

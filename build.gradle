@@ -25,3 +25,9 @@ sourceSets {
         }
     }
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'jndiscover.Main'
+    }
+}

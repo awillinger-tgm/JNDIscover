@@ -2,8 +2,6 @@ package jndiscover;
 
 import jndiscover.ops.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,29 +10,25 @@ import java.util.Map;
  */
 public class Main {
     public static void main(String[] args) {
-        Map <String, Method> entryPoints = new HashMap<String, Method>();
-        try {
-            entryPoints.put("lookup", Lookup.class.getMethod("main", String[].class));
-            entryPoints.put("list", List.class.getMethod("main", String[].class));
-            entryPoints.put("bind", Bind.class.getMethod("main", String[].class));
-            entryPoints.put("rebind", Rebind.class.getMethod("main", String[].class));
-            entryPoints.put("unbind", Unbind.class.getMethod("main", String[].class));
-            entryPoints.put("rename", Rename.class.getMethod("main", String[].class));
-            entryPoints.put("create", Create.class.getMethod("main", String[].class));
-            entryPoints.put("destroy", Destroy.class.getMethod("main", String[].class));
-            entryPoints.put("get_all_attributes", GetAllAttrs.class.getMethod("main", String[].class));
-            entryPoints.put("mod_attributes", ModAttrs.class.getMethod("main", String[].class));
-            entryPoints.put("bind_attributes", BindAttrs.class.getMethod("main", String[].class));
-            entryPoints.put("rebind_attributes", RebindAttrs.class.getMethod("main", String[].class));
-            entryPoints.put("search", Search.class.getMethod("main", String[].class));
-            entryPoints.put("search_with_filter_ret_all", SearchWithFilterRetAll.class.getMethod("main", String[].class));
-            entryPoints.put("search_subtree", SearchSubtree.class.getMethod("main", String[].class));
-            entryPoints.put("search_count_limit", SearchCountLimit.class.getMethod("main", String[].class));
-            entryPoints.put("search_time_limit", SearchTimeLimit.class.getMethod("main", String[].class));
-        } catch (NoSuchMethodException nsme) {
-            System.err.println("Could not bind to some method.");
-            System.err.print(nsme.getMessage());
-        }
+        Map <String, Runnable> entryPoints = new HashMap<String, Runnable>() {{
+            put("lookup", () -> Rebind.main(new String[]{}));
+            put("list", () -> List.main(new String[]{}));
+            put("bind", () -> Bind.main(new String[]{}));
+            put("rebind", () -> Rebind.main(new String[]{}));
+            put("unbind", () -> Unbind.main(new String[]{}));
+            put("rename", () -> Rename.main(new String[]{}));
+            put("create", () -> Create.main(new String[]{}));
+            put("destroy", () -> Destroy.main(new String[]{}));
+            put("get_all_attributes", () -> GetAllAttrs.main(new String[]{}));
+            put("mod_attributes", () -> ModAttrs.main(new String[]{}));
+            put("bind_attributes", () -> BindAttrs.main(new String[]{}));
+            put("rebind_attributes", () -> RebindAttrs.main(new String[]{}));
+            put("search", () -> Search.main(new String[]{}));
+            put("search_with_filter_ret_all", () -> SearchWithFilterRetAll.main(new String[]{}));
+            put("search_subtree", () -> SearchSubtree.main(new String[]{}));
+            put("search_count_limit", () -> SearchCountLimit.main(new String[]{}));
+            put("search_time_limit", () -> SearchTimeLimit.main(new String[]{}));
+        }};
 
         Map <String, String> descriptions = new HashMap<String, String>() {{
             put("lookup", "Lookup an Object");
@@ -58,14 +52,18 @@ public class Main {
 
         if (args.length != 0) {
             String command = args[0];
-            if(entryPoints.containsKey(command)) {
-                Method entryPoint = entryPoints.get(command);
 
-                try {
-                    entryPoint.invoke(null);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+            if (args.length >= 2) {
+                String hostAndPort = args[1];
+                System.setProperty("ldap_server", hostAndPort);
+            } else if(System.getProperty("ldap_server") == null) {
+                System.setProperty("ldap_server", "localhost:389");
+            }
+
+            if(entryPoints.containsKey(command)) {
+                Runnable entryPoint = entryPoints.get(command);
+
+                entryPoint.run();
 
                 System.exit(0);
             } else {
@@ -76,11 +74,9 @@ public class Main {
     }
 
     public static void help(Map <String, String> descriptions) {
-        System.out.println("========");
-        System.out.println("Commands");
-        System.out.println("========");
+        System.out.println("Usage: java -jar <jarfile>.jar <command> [host:port]");
         System.out.println();
-        System.out.println("Command\tDescription");
+        System.out.println("Commands:");
         System.out.println();
         for(Map.Entry<String,String> entry: descriptions.entrySet()) {
             System.out.println(entry.getKey());

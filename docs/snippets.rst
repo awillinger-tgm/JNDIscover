@@ -269,6 +269,13 @@ Add a binding with Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The snippet from the Add a binding section will be expanded:
+Please note that the line where the context is being intialized
+has to be replaced with:
+
+.. code:: java
+
+    DirContext ctx = new InitialDirContext(env);
+
 
 .. code:: java
 

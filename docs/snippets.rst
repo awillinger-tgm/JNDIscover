@@ -1,7 +1,7 @@
 Code snippets and results
 =========================
 
-Every one of these snippets prescents the following snippet to initialize the
+Everyone of these snippets prescents the following snippet to initialize the
 context:
 
 .. code:: java
@@ -23,9 +23,32 @@ And should be ended with:
 
 This can be placed in a finally block, for example.
 
-To run one of 
+To run one of the operations, run the jar file like so:
 
-java -jar ?.jar 
+java -jar JNDiscover-rxx.yyyyyy.jar <Operation>
+
+Whereas <Operation> is one of the following:
+
+=================== =======================================
+Operation           Executes
+=================== =======================================
+lookup              Lookup an object
+list                List the context
+bind                Add a binding
+rebind              Replace a binding
+unbind              Remove a binding
+rename              Rename (object)
+create              Create a subcontext
+destroy             Destroy a subcontext
+get_all_attributes  Read attributes
+=================== =======================================
+
+Example:
+
+.. code:: bash
+
+    java -jar JNDiscover-r21.6cc02b.jar lookup
+
 
 Lookup an Object
 ~~~~~~~~~~~~~~~~
@@ -246,6 +269,13 @@ Add a binding with Attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The snippet from the Add a binding section will be expanded:
+Please note that the line where the context is being intialized
+has to be replaced with:
+
+.. code:: java
+
+    DirContext ctx = new InitialDirContext(env);
+
 
 .. code:: java
 

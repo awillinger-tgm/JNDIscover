@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant virtual environment requires a box to build off of;
   # download this one by running `vagrant box add precise64` 
-  config.vm.box = "precise64"
+  config.vm.box = "hashicorp/precise64"
 
   # A fully qualified host name helps avoid errors in start up.
   config.vm.hostname = "server.puppetlabs.test"

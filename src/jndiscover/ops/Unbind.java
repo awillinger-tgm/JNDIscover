@@ -48,7 +48,7 @@ public class Unbind {
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial, dc=tgm");
+	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial");
 
 	try {
 	    // Create the initial context

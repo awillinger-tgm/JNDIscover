@@ -1,25 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$install_ldap = <<SCRIPT
-apt-get -y update
-apt-get -y upgrade
-debconf-set-selections /vagrant/slapd.seed
-apt-get -y install slapd ldap-utils
-SCRIPT
-
-$setup_ldap = <<SCRIPT
-echo "corba & java ldif's"
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/corba.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/java.ldif
-
-#echo "loglevel, memberof & refint ldif's"
-#ldapmodify -Y EXTERNAL -H ldapi:/// -f /vagrant/loglevel.ldif
-#ldapadd -Y EXTERNAL -H ldapi:/// -f /vagrant/memberof.ldif 
-#ldapadd -Y EXTERNAL -H ldapi:/// -f /vagrant/refint.ldif
-ldapadd -Y EXTERNAL -H ldapi:/// -f /vagrant/tutorial.ldif
-SCRIPT
-
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
 
@@ -31,6 +12,6 @@ Vagrant.configure("2") do |config|
   # using a specific IP.
   config.vm.network :private_network, ip: "192.168.33.20"
 
-  config.vm.provision "shell", inline: $install_ldap
-  config.vm.provision "shell", inline: $setup_ldap
+  config.vm.provision "shell", path: "install_ldap.sh"
+  config.vm.provision "shell", path: "setup_ldap.sh"
 end

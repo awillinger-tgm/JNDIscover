@@ -1,17 +1,17 @@
-slapd	slapd/internal/adminpw	password	
 slapd	slapd/password2	password	
-slapd	slapd/internal/generated_adminpw	password	
 slapd	slapd/password1	password	
-slapd	slapd/domain	string	tgm
-slapd	slapd/invalid_config	boolean	true
-slapd	slapd/no_configuration	boolean	false
+slapd	slapd/internal/adminpw	password	
+slapd	slapd/internal/generated_adminpw	password	
 slapd	slapd/upgrade_slapcat_failure	error	
-slapd	slapd/dump_database_destdir	string	/var/backups/slapd-VERSION
+slapd	slapd/invalid_config	boolean	true
 # Do you want the database to be removed when slapd is purged?
-slapd	slapd/purge_database	boolean	true
-slapd	slapd/backend	select	BDB
-slapd	slapd/password_mismatch	note	
-slapd	shared/organization	string	ldapadmin
-slapd	slapd/dump_database	select	when needed
-slapd	slapd/move_old_database	boolean	false
+slapd	slapd/purge_database	boolean	false
+slapd	slapd/no_configuration	boolean	false
+slapd	slapd/dump_database_destdir	string	/var/backups/slapd-VERSION
+slapd	slapd/domain	string	JNDITutorial
 slapd	slapd/allow_ldap_v2	boolean	true
+slapd	slapd/move_old_database	boolean	false
+slapd	slapd/password_mismatch	note	
+slapd	shared/organization	string	JNDITutorial
+slapd	slapd/backend	select	HDB
+slapd	slapd/dump_database	select	when needed

@@ -60,7 +60,7 @@ public class Search {
         Hashtable<String, Object> env = new Hashtable<String, Object>(11);
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial");
+	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial, dc=tgm");
 
 	try {
 	    // Create initial context

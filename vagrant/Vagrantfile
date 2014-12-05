@@ -1,16 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$install_opends = <<SCRIPT
-apt-get update -y
-apt-get install -y unzip openjdk-7-jre-headless
-
-wget -c -O OpenDS-2.2.1.zip http://java.net/downloads/opends/promoted-builds/2.2.1/OpenDS-2.2.1.zip
-unzip OpenDS-2.2.1.zip
-cd OpenDS-2.2.1/
-./setup --cli
-SCRIPT
-
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
 
@@ -22,6 +12,6 @@ Vagrant.configure("2") do |config|
   # using a specific IP.
   config.vm.network :private_network, ip: "192.168.33.20"
 
-  #config.vm.provision "shell", path: "install_ldap.sh"
-  #config.vm.provision "shell", path: "setup_ldap.sh"
+  config.vm.provision "shell", path: "install_ldap.sh"
+  config.vm.provision "shell", path: "setup_ldap.sh"
 end

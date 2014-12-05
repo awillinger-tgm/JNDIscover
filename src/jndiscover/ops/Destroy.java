@@ -46,6 +46,9 @@ public class Destroy {
 	env.put(Context.INITIAL_CONTEXT_FACTORY, 
 	    "com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL, "ldap://" + System.getProperty("ldap_server") + "/o=JNDITutorial");
+	env.put(Context.SECURITY_PRINCIPAL, "cn=admin,dc=JNDITutorial");
+	env.put(Context.SECURITY_CREDENTIALS, "password");
+
 
 	try {
 	    // Create the initial context

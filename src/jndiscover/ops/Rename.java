@@ -49,6 +49,9 @@ public class Rename {
 	    "com.sun.jndi.ldap.LdapCtxFactory");
 	env.put(Context.PROVIDER_URL,
 		"ldap://" + System.getProperty("ldap_server") + "/ou=People,o=JNDITutorial");
+	env.put(Context.SECURITY_PRINCIPAL, "cn=admin,dc=JNDITutorial");
+	env.put(Context.SECURITY_CREDENTIALS, "password");
+
 
 	try {
 	    // Create the initial context
